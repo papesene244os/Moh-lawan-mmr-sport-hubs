@@ -1,0 +1,115 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Create Android project
+        shell: bash
+        run: |
+          set -e
+
+          mkdir -p app/src/main/java
+          mkdir -p app/src/main/res/layout
+          mkdir -p app/src/main/res/values
+          mkdir -p app/src/main/assets
+
+          PACKAGE=$(grep -m1 '^package ' MainActivity.java | sed 's/package //;s/;//' | tr -d '\r')
+
+          if [ -z "$PACKAGE" ]; then
+            echo "Could not find Java package name."
+            exit 1
+          fi
+
+          PACKAGE_PATH=$(echo "$PACKAGE" | tr '.' '/')
+          mkdir -p "app/src/main/java/$PACKAGE_PATH"
+
+          cp MainActivity.java "app/src/main/java/$PACKAGE_PATH/MainActivity.java"
+          cp activity_main.xml app/src/main/res/layout/activity_main.xml
+          cp styles.xml app/src/main/res/values/styles.xml
+
+          if [ -f index.html ]; then
+            cp index.html app/src/main/assets/index.html
+          fi
+
+          cat > settings.gradle <<'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+
+          rootProject.name = "MOH-LAWAN-MMR-SPORTS-HUB"
+          include(":app")
+          EOF
+
+          cat > build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.7.3' apply false
+          }
+          EOF
+
+          cat > app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+
+          android {
+              namespace = System.getenv("ANDROID_NAMESPACE")
+              compileSdk 35
+
+              defaultConfig {
+                  applicationId = System.getenv("ANDROID_NAMESPACE")
+                  minSdk 23
+                  targetSdk 35
+                  versionCode 1
+                  versionName "1.0"
+              }
+          }
+          EOF
+
+          export ANDROID_NAMESPACE="$PACKAGE"
+
+          cp AndroidManifest.xml app/src/main/AndroidManifest.xml
+
+          sed -i "s/namespace = System.getenv(\"ANDROID_NAMESPACE\")/namespace = \"$PACKAGE\"/" app/build.gradle
+          sed -i "s/applicationId = System.getenv(\"ANDROID_NAMESPACE\")/applicationId = \"$PACKAGE\"/" app/build.gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build APK
+        run: gradle assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MOH-LAWAN-MMR-SPORTS-HUB-APK
+          path: app/build/outputs/apk/debug/*.apk
