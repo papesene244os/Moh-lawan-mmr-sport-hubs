@@ -1,0 +1,20 @@
+MOH LAWAN MMR SPORTS HUB — BUILDING APK USING ONLY A PHONE
+
+This project includes a GitHub Actions workflow so the APK can be built in the cloud without a computer.
+
+Steps:
+1. Create/sign in to a GitHub account in Chrome.
+2. Create a new repository, for example: moh-lawan-mmr-sports-hub
+3. Upload ALL files and folders from this project into the repository (including .github/workflows/build-apk.yml).
+4. Open the repository's Actions tab.
+5. Select "Build Android APK".
+6. Tap "Run workflow" if GitHub asks you to run it manually.
+7. Wait for the workflow to finish.
+8. Open the completed workflow run and download the artifact named:
+   MOH-LAWAN-MMR-SPORTS-HUB-APK
+9. Extract the downloaded artifact and install the APK on your Android phone.
+
+Important:
+- This is a debug APK for testing, not a Play Store release.
+- Keep the app's news links and source usage within each source's licensing/terms.
+- Do not copy full copyrighted articles into the app without permission.

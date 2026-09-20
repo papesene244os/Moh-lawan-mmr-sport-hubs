@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ha">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MOH LAWAN MMR SPORTS HUB</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07090d;color:#fff;font-family:Arial,sans-serif}
+.app{max-width:480px;margin:auto;min-height:100vh;background:#0b0f16}
+header{padding:14px 16px;border-bottom:1px solid #222;display:flex;align-items:center;gap:10px;position:sticky;top:0;background:#080b10;z-index:5}
+header img{width:52px;height:52px;border-radius:12px;object-fit:cover}
+.brand b{display:block;font-size:16px}.brand span{color:#ffc400;font-weight:800}
+nav{display:flex;gap:7px;overflow:auto;padding:12px}.tab{border:0;background:#171d27;color:#ddd;padding:9px 13px;border-radius:20px;white-space:nowrap}.tab.active{background:#ffc400;color:#111;font-weight:800}
+.hero{margin:4px 12px 14px;border-radius:18px;padding:20px;background:linear-gradient(135deg,#151b25,#0b0d12);border:1px solid #292f39}
+.badge{display:inline-block;background:#ffc400;color:#111;padding:5px 9px;border-radius:8px;font-weight:800;font-size:12px}
+.hero h1{font-size:25px;line-height:1.1;margin:12px 0}.hero p{color:#c9cdd4;line-height:1.5}
+.section{padding:0 12px}.section h2{font-size:20px;border-left:5px solid #ffc400;padding-left:9px}
+.card{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid #242a33}.thumb{width:105px;height:75px;border-radius:12px;background:linear-gradient(135deg,#263241,#111);flex:none}
+.card h3{font-size:15px;margin:7px 0;line-height:1.25}.meta{font-size:11px;color:#9ea5af}
+.bottom{position:sticky;bottom:0;background:#090c11;border-top:1px solid #272c34;display:flex;justify-content:space-around;padding:10px 4px}.bottom button{background:none;border:0;color:#aaa;font-size:11px}.bottom button.active{color:#ffc400}
+#feed{padding-bottom:8px}.empty{padding:30px 15px;color:#aaa;text-align:center}
+</style>
+</head>
+<body>
+<div class="app">
+<header><img src="logo.jpg"><div class="brand"><b>MOH LAWAN MMR</b><span>SPORTS HUB</span><small style="display:block;color:#9ea5af;margin-top:3px">Labaran ƙwallon ƙafa cikin Hausa</small></div></header>
+<nav id="tabs">
+<button class="tab active" onclick="show('Gida',this)">Gida</button>
+<button class="tab" onclick="show('Najeriya',this)">Najeriya</button>
+<button class="tab" onclick="show('Afirka',this)">Afirka</button>
+<button class="tab" onclick="show('Gasanni',this)">Gasanni</button>
+</nav>
+<div style="padding:0 12px 8px"><button onclick="refreshFeed()" style="width:100%;padding:11px;border:1px solid #3a404a;background:#141a23;color:#ffc400;border-radius:12px;font-weight:800">↻ Sabunta Labarai</button><div id="status" style="font-size:11px;color:#777;margin:6px 2px"></div></div><div id="feed"></div>
+
+<div class="section" style="margin-top:18px;padding-bottom:20px">
+  <h2>Majiyoyin Labarai</h2>
+  <div class="card" style="display:block">
+    <h3>BBC Hausa — Wasanni</h3>
+    <div class="meta">Labaran wasanni cikin Hausa</div>
+    <a href="https://www.bbc.com/hausa" target="_blank" style="display:inline-block;margin-top:8px;background:#ffc400;color:#111;padding:9px 14px;border-radius:10px;text-decoration:none;font-weight:800">Buɗe Source</a>
+  </div>
+  <div class="card" style="display:block">
+    <h3>Sports247 Nigeria</h3>
+    <div class="meta">Labaran wasanni na Najeriya da Afirka</div>
+    <a href="https://www.sports247.ng/" target="_blank" style="display:inline-block;margin-top:8px;background:#ffc400;color:#111;padding:9px 14px;border-radius:10px;text-decoration:none;font-weight:800">Buɗe Source</a>
+  </div>
+</div>
+<div class="bottom">
+<button class="active" onclick="show('Gida',tabs.children[0])">⌂<br>Gida</button>
+<button onclick="show('Najeriya',tabs.children[1])">▤<br>Labari</button>
+<button onclick="show('Afirka',tabs.children[2])">🌍<br>Afirka</button>
+<button onclick="show('Gasanni',tabs.children[3])">🏆<br>Gasanni</button>
+<button>☆<br>Saukewa</button>
+</div>
+</div>
+<script>
+const data={
+Gida:[
+['LABARI NA FARKO','Super Eagles: Sabbin bayanai daga tawagar Najeriya','Najeriya'],
+['Najeriya','Sabbin labaran ’yan wasan Najeriya da kungiyoyinsu','Najeriya'],
+['CAF','Abubuwan da ke faruwa a gasannin Afirka','Afirka'],
+['Senegal','Sabbin labarai daga ƙwallon ƙafa a Senegal','Afirka']
+],
+Najeriya:[
+['Najeriya','Super Eagles da sabbin shirye-shiryen tawagar','Najeriya'],
+['NPFL','Labaran gasar NPFL da kungiyoyin Najeriya','Najeriya'],
+['’Yan wasa','Sabbin bayanai kan ’yan wasan Najeriya a Turai','Najeriya']
+],
+Afirka:[
+['Senegal','Labaran ƙwallon ƙafa daga Senegal','Afirka'],
+['Morocco','Sabbin labarai daga ƙwallon ƙafa a Morocco','Afirka'],
+['Ghana','Abubuwan da ke faruwa a ƙwallon ƙafa na Ghana','Afirka'],
+['CAF','Champions League da sauran gasannin CAF','Afirka']
+],
+Gasanni:[
+['CAF Champions League','Jadawalin da sakamakon manyan gasannin Afirka','Gasanni'],
+['Premier League','Sabbin labaran gasar Ingila','Gasanni'],
+['La Liga','Sabbin labaran gasar Spain','Gasanni']
+]};
+function show(key,el){
+document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); if(el)el.classList.add('active');
+feed.innerHTML='<div class="hero"><span class="badge">'+key+'</span><h1>MOH LAWAN MMR SPORTS HUB</h1><p>Sabbin labaran ƙwallon ƙafa cikin Hausa daga Najeriya da sauran ƙasashen Afirka.</p></div><div class="section"><h2>Sabbin Labarai</h2>'+data[key].map((x,i)=>`<div class="card"><div class="thumb"></div><div><span class="badge">${x[0]}</span><h3>${x[1]}</h3><div class="meta">${x[2]} • ${i+2} hours ago</div></div></div>`).join('')+'</div>';
+}
+show('Gida',tabs.children[0]); refreshFeed();
+</script>
+
+<script>
+(function () {
+  const original = window.receiveLiveNews;
+  window.receiveLiveNews = function(raw) {
+    try {
+      const items = JSON.parse(raw || "[]");
+      if (!items.length) {
+        const status = document.getElementById("liveStatus");
+        if (status) status.textContent = "Ba a samu sabbin labarai ba yanzu.";
+        return;
+      }
+      const status = document.getElementById("liveStatus");
+      if (status) status.textContent = "An sabunta labarai kai-tsaye.";
+
+      // Try common card containers used by the prototype.
+      const container =
+        document.querySelector("#newsList") ||
+        document.querySelector(".news-list") ||
+        document.querySelector(".articles") ||
+        document.querySelector("main");
+      if (!container) return;
+
+      const cards = items.slice(0, 12).map(function(n) {
+        const safeTitle = String(n.title || "Sabon labari");
+        const safeDate = String(n.date || "");
+        const safeLink = String(n.link || "#");
+        return '<article class="news-card" style="padding:14px;margin:10px 0;border-radius:14px;background:#111;border:1px solid #3b3218;">' +
+          '<div style="font-size:12px;color:#d4af37;margin-bottom:6px;">SABON LABARI</div>' +
+          '<h3 style="margin:0 0 8px;color:#fff;">' + escapeHtml(safeTitle) + '</h3>' +
+          '<div style="font-size:11px;color:#aaa;margin-bottom:8px;">' + escapeHtml(safeDate) + '</div>' +
+          '<a href="' + escapeAttr(safeLink) + '" target="_blank" style="color:#d4af37;">Karanta cikakken labari →</a>' +
+          '</article>';
+      }).join("");
+      container.innerHTML = cards + container.innerHTML;
+    } catch (e) {}
+  };
+
+  window.refreshLiveNews = function() {
+    const status = document.getElementById("liveStatus");
+    if (status) status.textContent = "Ana sabunta labarai…";
+    if (window.AndroidNews && AndroidNews.refreshNews) AndroidNews.refreshNews();
+  };
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function(c) {
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function escapeAttr(s) { return escapeHtml(s).replace(/javascript:/gi, ""); }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(window.refreshLiveNews, 700);
+  });
+})();
+</script>
+
+
+<section id="autoSources" style="margin:16px 0;padding:16px;border:1px solid #3b3218;border-radius:16px;background:#0b0b0b;">
+  <h2 style="color:#d4af37;margin:0 0 10px;">Majiyoyin Labarai</h2>
+  <p style="color:#aaa;font-size:13px;margin:0 0 12px;">Ana sabunta headlines ta atomatik daga majiyoyin da ke da RSS/API ko izinin amfani.</p>
+  <div style="display:grid;gap:8px;">
+    <a href="https://www.bbc.com/hausa" target="_blank" style="color:#fff;text-decoration:none;padding:11px;border-radius:10px;background:#171717;">BBC Hausa →</a>
+    <a href="https://www.cafonline.com/" target="_blank" style="color:#fff;text-decoration:none;padding:11px;border-radius:10px;background:#171717;">CAF →</a>
+    <a href="https://thenff.com/" target="_blank" style="color:#fff;text-decoration:none;padding:11px;border-radius:10px;background:#171717;">Nigeria Football Federation →</a>
+  </div>
+</section>
+
+
+<script>
+window.MLM_SOURCES = [
+  {name:"BBC Hausa", url:"https://www.bbc.com/hausa", type:"official-link", enabled:true},
+  {name:"CAF", url:"https://www.cafonline.com/", type:"official-link", enabled:true},
+  {name:"Nigeria Football Federation", url:"https://thenff.com/", type:"official-link", enabled:true}
+];
+</script>
+
+
+<section id="mlmFeatures" style="margin:16px 0;padding:14px;border:1px solid #3b3218;border-radius:16px;background:#0b0b0b;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+    <button onclick="MLM.openSearch()" style="padding:12px;border:0;border-radius:10px;background:#d4af37;color:#000;font-weight:700;">🔎 Nema Labari</button>
+    <button onclick="MLM.showFavorites()" style="padding:12px;border:1px solid #d4af37;border-radius:10px;background:#111;color:#d4af37;font-weight:700;">⭐ Favorites</button>
+    <button onclick="MLM.showFixtures()" style="padding:12px;border:1px solid #333;border-radius:10px;background:#171717;color:#fff;">⚽ Fixtures</button>
+    <button onclick="MLM.showNotifications()" style="padding:12px;border:1px solid #333;border-radius:10px;background:#171717;color:#fff;">🔔 Sanarwa</button>
+  </div>
+  <div id="mlmFeaturePanel" style="margin-top:12px;"></div>
+</section>
+<script>
+const MLM = {
+  favs: JSON.parse(localStorage.getItem("mlm_favs") || "[]"),
+  notes: JSON.parse(localStorage.getItem("mlm_notes") || "[]"),
+  save(){ localStorage.setItem("mlm_favs", JSON.stringify(this.favs)); localStorage.setItem("mlm_notes", JSON.stringify(this.notes)); },
+  panel(){ return document.getElementById("mlmFeaturePanel"); },
+  openSearch(){
+    const q = prompt("Rubuta sunan ɗan wasa, ƙungiya ko labari:");
+    if(!q) return;
+    const p=this.panel(); p.innerHTML='<div style="padding:12px;color:#ddd;">Ana neman: <b>'+this.esc(q)+'</b><br><small>Za a haɗa cikakken live search da backend a production.</small></div>';
+  },
+  showFavorites(){
+    const p=this.panel();
+    p.innerHTML='<h3 style="color:#d4af37;">⭐ Favorites</h3>' +
+      (this.favs.length ? this.favs.map((x,i)=>'<div style="padding:9px;border-bottom:1px solid #222;color:#fff;">'+this.esc(x)+' <button onclick="MLM.removeFav('+i+')" style="float:right;">✕</button></div>').join("") :
+      '<div style="color:#aaa;">Ba ka ajiye labari ba tukuna.</div>');
+  },
+  removeFav(i){ this.favs.splice(i,1); this.save(); this.showFavorites(); },
+  showFixtures(){
+    const p=this.panel();
+    p.innerHTML='<h3 style="color:#d4af37;">⚽ Fixtures & Results</h3><div style="color:#aaa;">An shirya wannan sashe domin haɗa live fixtures/results API ba tare da saka bayanan bogi ba.</div>';
+  },
+  showNotifications(){
+    const p=this.panel();
+    p.innerHTML='<h3 style="color:#d4af37;">🔔 Sanarwa</h3><div style="color:#aaa;">App ɗin yana da wurin sanarwa; push notifications za a kunna idan an haɗa production notification service.</div>';
+  },
+  addFav(title){ if(title && !this.favs.includes(title)){this.favs.unshift(title);this.save();alert("An ajiye labarin a Favorites.");} },
+  esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+};
+</script>
+
+</body></html>
+<script>
+function refreshFeed(){
+  const s=document.getElementById('status');
+  s.textContent='An shirya tsarin don haɗa live news API/backend. Wannan prototype yana amfani da demo headlines.';
+}
+</script>
